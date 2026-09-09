@@ -3,7 +3,8 @@ import os
 
 # ===== Paths =====
 BASE_DIR = Path(__file__).resolve().parents[2]   # .../medibot
-DATA_DIR = BASE_DIR / "data"
+BACKEND_DIR = BASE_DIR / "backend"
+DATA_DIR = BACKEND_DIR / "data"
 
 DOC_DIRS = {
     "general": DATA_DIR / "general",
@@ -32,4 +33,4 @@ JWT_ALGO = "HS256"
 
 MEDIASSIST_DB_PATH = "backend/data/db/mediassist.db"
 
-QDRANT_PATH = "backend\qdrant_db"
+QDRANT_PATH = str(BACKEND_DIR / "qdrant_db")
