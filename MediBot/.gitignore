@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+backend/qdrant_db/.lock
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+.idea/

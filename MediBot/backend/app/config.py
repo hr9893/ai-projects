@@ -33,5 +33,3 @@ JWT_ALGO = "HS256"
 MEDIASSIST_DB_PATH = "backend/data/db/mediassist.db"
 
 QDRANT_PATH = "backend\qdrant_db"
-
-GROQ_API_KEY = "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"
