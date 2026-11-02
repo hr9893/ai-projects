@@ -287,7 +287,7 @@ Response:
 ```json
 {
   "answer": "Generated answer grounded in authorized project context.",
-  "route": "rag-drug"
+  "route": "retrieval-drug"
 }
 ```
 
