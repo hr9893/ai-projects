@@ -5,6 +5,10 @@ from qdrant_client.models import Filter, FieldCondition, MatchValue, MatchAny
 from backend.core.security import oauth2_scheme, SECRET_KEY, ALGORITHM
 from backend.db.mockdb import get_user
 
+from backend.utils.logger import ExtensionLoggerFactory
+
+LOGGER = ExtensionLoggerFactory.getLogger("rbac_service")
+
 ROLE_COLLECTIONS = {
     "doctor":           ["general", "clinical", "nursing", "pharmacy"],
     "nurse":            ["general", "nursing", "pharmacy"],
@@ -26,6 +30,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     Validates the JWT token, extracts the user, and ensures they exist.
     Injected into all protected API endpoints.
     """
+    function_name = "get_current_user"
+    LOGGER.extMethodEntry(function_name, lambda: "Entry")
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -44,13 +51,20 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     if user is None:
         raise credentials_exception
 
+    LOGGER.extDebugAsJson(function_name, lambda: "User Details -> ", user)
+
+    LOGGER.extMethodEntry(function_name, lambda: "Exit")
     return user
 
 def get_allowed_collections(role: str) -> list[str]:
     """Returns the list of vector collections a role can query."""
+    function_name = "get_allowed_collections"
+    LOGGER.extMethodEntry(function_name, lambda:"Entry")
     role = role.lower()
     if role not in ROLE_COLLECTIONS:
         raise PermissionError(f"Unknown role: {role}")
+
+    LOGGER.extMethodExit(function_name, lambda:"Exit")
     return ROLE_COLLECTIONS[role]
 
 def get_qdrant_rbac_filter(role: str) -> Filter:

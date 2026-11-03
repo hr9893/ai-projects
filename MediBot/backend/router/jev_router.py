@@ -1,8 +1,7 @@
-import logging
-
 from typesafe_sdk import Choice, Noul, NoulCriteria, TypeSafeClient, TypeSafeError
+from backend.utils.logger import ExtensionLoggerFactory
 
-logger = logging.getLogger(__name__)
+LOGGER = ExtensionLoggerFactory.getLogger("jev_router")
 
 
 ROUTE_QUESTION = Choice(
@@ -47,6 +46,10 @@ DRUG_KEYWORDS = {
 
 def classify_query(question: str) -> dict:
     """Route the query and classify whether it is drug-related."""
+    function_name = "classify_query"
+    LOGGER.extMethodEntry(function_name, None, lambda : "Entry")
+
+    LOGGER.extDebugAsJson(function_name, lambda : "Classifier  incoming question ->", question)
 
     try:
         with TypeSafeClient() as client:
@@ -61,7 +64,7 @@ def classify_query(question: str) -> dict:
         route = response.choices["route"].choice
         drug_score = response.nouls["drug_related"].noul
 
-        return {
+        response = {
             "route": route,
             "reasoning": f"Jev selected '{route}'.",
             "confidence": response.choices["route"].confidence,
@@ -69,8 +72,12 @@ def classify_query(question: str) -> dict:
             "drug_related_score": drug_score,
         }
 
+        LOGGER.extDebugAsJson(function_name, lambda: f"Classifier  response for question {question}", f"Response Payload -> {response}")
+
+        return response
+
     except TypeSafeError as error:
-        logger.warning("Jev routing failed: %s", error)
+        LOGGER.extError(function_name, lambda: "Exception occurred", error, str(error))
 
         question_lower = question.lower()
         drug_related = any(

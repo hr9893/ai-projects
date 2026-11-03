@@ -8,7 +8,14 @@ from backend.retrieval.formater import format_doc_answer
 from backend.services.synthesizer import generate_rag_answer
 from backend.sql_rag.sql_agent import answer_sql_query
 
+from backend.utils.logger import ExtensionLoggerFactory
+
+LOGGER = ExtensionLoggerFactory.getLogger("Chat_Service")
+
 def process_chat(question: str, current_user: dict, requested_collection: str) -> dict:
+    function_name = "process_chat"
+    LOGGER.extMethodEntry(function_name, None, lambda: "Entry")
+
     user_role = current_user["role"]
 
     # 2. Get the classification from Jev (includes route and drug_related)
@@ -16,15 +23,13 @@ def process_chat(question: str, current_user: dict, requested_collection: str) -
     route = classification["route"]
     is_drug_related = classification["drug_related"]
 
-    print(f"[DEBUG] User: {user_role} | Route: {route} | Drug Related: {is_drug_related} | Confidence: {classification['confidence']}")
+    LOGGER.extDebugAsJson(function_name, lambda: f"[DEBUG] User: {user_role} | Route: {route} | Drug Related: {is_drug_related} | Confidence: {classification['confidence']}")
 
     rag_answer = ""
     sql_answer = ""
 
     allowed_collections = get_allowed_collections(user_role)
 
-    # --- Step 3: Hard Override for Drug-Related Questions ---
-    # Just like your old main.py, but secured with the new RBAC module
     if is_drug_related:
         if "pharmacy" not in allowed_collections:
              raise HTTPException(
@@ -32,7 +37,6 @@ def process_chat(question: str, current_user: dict, requested_collection: str) -
                 detail="RBAC DENIED: Your role does not have access to drug or medication information."
             )
 
-        # Force the active collection to 'pharmacy' to ensure accuracy
         print("[DEBUG] Hard Override: Forcing retrieval to 'pharmacy' collection.")
         docs = retrieve_documents(
             query=question,
@@ -48,16 +52,14 @@ def process_chat(question: str, current_user: dict, requested_collection: str) -
             "route": "retrieval-drug"
         }
 
-    # --- Step 4: Normal Routing for everything else ---
     if route in ["rag", "both"]:
-        # Verify the requested collection from the UI against allowed collections
         if requested_collection != "All collections" and requested_collection not in allowed_collections:
              raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"RBAC DENIED: Cannot query '{requested_collection}' documents."
             )
 
-        print(f"[DEBUG] Searching across all authorized collections: {allowed_collections}")
+        LOGGER.extDebugAsJson(function_name, lambda: "Searching across all authorized collections: ", allowed_collections)
         docs = retrieve_documents(
             query=question,
             role=user_role,
