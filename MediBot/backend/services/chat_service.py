@@ -18,7 +18,6 @@ def process_chat(question: str, current_user: dict, requested_collection: str) -
 
     user_role = current_user["role"]
 
-    # 2. Get the classification from Jev (includes route and drug_related)
     classification = classify_query(question)
     route = classification["route"]
     is_drug_related = classification["drug_related"]

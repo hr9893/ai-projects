@@ -1,4 +1,3 @@
-# backend/utils/logger.py
 import logging
 import json
 import os
@@ -46,15 +45,12 @@ class ExtensionLogger:
             return msg()
         return msg
 
-    # Matches Java: extMethodEntry(methodName, params, msgSupplier)
     def extMethodEntry(self, method_name: str, params: Any = None, msg: Union[str, Callable[[], str]] = "Entry"):
         self.logger.info(f"[{method_name}] >>> {self._eval_msg(msg)}")
 
-    # Matches Java: extMethodExit(methodName, retVal, msgSupplier)
     def extMethodExit(self, method_name: str, ret_val: Any = None, msg: Union[str, Callable[[], str]] = "Exit"):
         self.logger.info(f"[{method_name}] <<< {self._eval_msg(msg)}")
 
-    # Matches Java: extDebugAsJson(methodName, msgSupplier, payload)
     # Made payload optional (=None) to prevent crashes if you forget to pass it
     def extDebugAsJson(self, method_name: str, msg: Union[str, Callable[[], str]], payload: Any = None):
         try:

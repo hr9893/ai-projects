@@ -441,3 +441,14 @@ Before production deployment:
 ## License
 
 This project does not currently declare a license. Add an explicit license before distributing it.
+
+## Commands to run the Evaluation Set
+
+```
+python .\backend\evals\run_benchmark.py --eval-set "Path To YOUR FILE \retrieval_eval_set.jsonl" --output "PATH TO GENRATE THE RESULTSET \eval_results.jsonl" --qdrant-path "backend/data/db/mediassist_qdrant"
+```
+## Run EVAL Grader for Final Result
+```
+python .\backend\evals\score_retrieval.py --results "PATH TO EVAL RESULT DATASET \eval_results.jsonl" --qrels "PATH TO YOUR QREL FILE \qrels.tsv" --known-distractors "path to your distractors file \known_distractors.tsv" --eval-set "C:\PERSONAL\AI\CodeBasic\Projects\MedoBot Evals\retrieval_eval_bundle\retrieval_eval_set.jsonl"
+```
+

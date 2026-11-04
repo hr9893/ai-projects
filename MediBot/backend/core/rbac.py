@@ -86,6 +86,16 @@ def get_qdrant_rbac_filter(role: str) -> Filter:
         ]
     )
 
+def access_roles_for_collection(collection :str)-> list[str]:
+    """which role can see a given collection"""
+    result = []
+
+    for role, collections in ROLE_COLLECTIONS.items():
+        if collection in collections:
+            result.append(role)
+
+    return result
+
 def get_allowed_sql_tables(role: str) -> list[str]:
     """
     Returns the strict list of SQL tables this role can view.

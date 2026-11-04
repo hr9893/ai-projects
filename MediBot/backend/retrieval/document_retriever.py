@@ -37,7 +37,7 @@ def retrieve_documents(query: str, role: str, active_collection: Union[str, List
         for i, doc in enumerate(candidates):
             source = doc.metadata.get('file_name', 'Unknown')
             collection = doc.metadata.get('collection', 'Unknown')
-            preview = doc.page_content.strip().replace('\n', ' ')[:150]
+            preview = doc.page_content.strip().replace('\n', ' ')[:230]
             raw_log_str += f"Raw Chunk {i + 1} | Source: {source} ({collection})\nText: {preview}...\n" + "-"*40 + "\n"
 
         LOGGER.extDebugTextBlock(function_name, lambda: "Raw Chunks retrieved from Qdrant ->", raw_log_str)
@@ -50,7 +50,7 @@ def retrieve_documents(query: str, role: str, active_collection: Union[str, List
         final_log_str = "=" * 80 + "\n"
         for i, doc in enumerate(reranked_docs):
             score = doc.metadata.get('jev_relevance_score', 'N/A')
-            preview = doc.page_content.strip().replace('\n', ' ')[:150]
+            preview = doc.page_content.strip().replace('\n', ' ')[:230]
             final_log_str += f"Final Chunk {i + 1} | Jev Score: {score}\nText: {preview}...\n" + "-" * 40 + "\n"
 
         LOGGER.extDebugTextBlock(function_name, lambda: f"Top {top_k} Reranked Chunks sent to LLM ->", final_log_str)

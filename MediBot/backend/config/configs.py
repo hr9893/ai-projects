@@ -42,7 +42,8 @@ QDRANT_PATH = str(BACKEND_DIR / "qdrant_db")
 # MODELS
 # =====================================================================
 EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2" # (Legacy, replaced by Jev)
+SPARSE_MODEL="Qdrant/bm25"
+
 
 # Note: LiteLLM requires the 'groq/' prefix for Groq models
 ROUTER_MODEL = "groq/llama-3.1-8b-instant"

@@ -19,10 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register the modular routers
 app.include_router(auth_router)
 app.include_router(chat_router)
 
 @app.get("/")
 def health_check():
-    return {"status": "ok", "message": "MediAssist Modular Backend is running."}
+    return {"status": "ok", "message": "Medi Buddy Modular Backend is running."}
